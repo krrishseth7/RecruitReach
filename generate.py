@@ -6,7 +6,7 @@ from openai import OpenAI
 import msoffcrypto
 import io
 import openpyxl
-load_dotenv(override=True)
+load_dotenv(dotenv_path="C:\Users\Krrish Seth\projects\llm_engineering\.env",override=True) #API KEY error
 try:
     api_key=os.getenv('OPENAI_API_KEY')
     if not api_key:
