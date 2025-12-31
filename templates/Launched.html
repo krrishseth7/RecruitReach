@@ -1,5 +1,428 @@
-<form action="/generate_email" method="post">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RecruitReach - Launch Campaign</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            color: #e0e0e0;
+            background: #0a0a0a;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(0, 255, 255, 0.03) 0px,
+                    transparent 1px,
+                    transparent 40px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(0, 255, 255, 0.03) 0px,
+                    transparent 1px,
+                    transparent 40px
+                );
+            animation: gridMove 20s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 40px); }
+        }
+
+        /* Back Button */
+        .back-button {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            z-index: 100;
+        }
+
+        .back-button a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #00ffff;
+            text-decoration: none;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            background: rgba(0, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .back-button a:hover {
+            background: rgba(0, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            border-color: #00ffff;
+        }
+
+        /* Main Container */
+        .launch-container {
+            max-width: 900px;
+            width: 90%;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header */
+        .launch-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .launch-header h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #00ffff, #ff00ff, #00ffff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shine 3s linear infinite;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        .launch-header p {
+            color: #b0b0b0;
+            font-size: 1.1rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: #1a1a1a;
+            padding: 3rem;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ffff, transparent);
+            animation: scanline 3s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .form-title {
+            color: #00ffff;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .form-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background: #ff00ff;
+        }
+
+        /* Form Styles */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        label {
+            color: #00ffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        label::before {
+            content: '>';
+            color: #ff00ff;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 1.2rem;
+            background: #0a0a0a;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: #e0e0e0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            position: relative;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5), inset 0 0 10px rgba(0, 255, 255, 0.1);
+            background: #0f0f0f;
+        }
+
+        input[type="text"]::placeholder {
+            color: #555;
+        }
+
+        /* Submit Button */
+        .submit-container {
+            margin-top: 1rem;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 1.4rem;
+            background: transparent;
+            color: #00ffff;
+            border: 2px solid #00ffff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
+        }
+
+        button[type="submit"]::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #ff00ff);
+            transition: left 0.4s ease;
+            z-index: -1;
+        }
+
+        button[type="submit"]:hover::before {
+            left: 0;
+        }
+
+        button[type="submit"]:hover {
+            color: #0a0a0a;
+            box-shadow: 0 0 25px #00ffff, 0 0 50px #00ffff;
+            border-color: #ff00ff;
+        }
+
+        button[type="submit"]:active {
+            transform: scale(0.98);
+        }
+
+        /* Info Panel */
+        .info-panel {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-left: 3px solid #00ffff;
+        }
+
+        .info-panel h3 {
+            color: #00ffff;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .info-panel ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-panel li {
+            color: #b0b0b0;
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .info-panel li::before {
+            content: '▹';
+            position: absolute;
+            left: 0;
+            color: #ff00ff;
+        }
+
+        /* Status Indicator */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            justify-content: center;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #00ff00;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px #00ff00; }
+            50% { opacity: 0.5; box-shadow: 0 0 20px #00ff00; }
+        }
+
+        .status-text {
+            color: #00ff00;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .launch-header h1 {
+                font-size: 2.5rem;
+            }
+
+            .form-card {
+                padding: 2rem;
+            }
+
+            .back-button {
+                top: 1rem;
+                left: 1rem;
+            }
+
+            .back-button a {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <div class="back-button">
+        <a href="index.html">← Back</a>
+    </div>
+
+    <!-- Main Container -->
+    <div class="launch-container">
+        <!-- Header -->
+        <div class="launch-header">
+            <h1>Launch Campaign</h1>
+            <p>Configure your automated recruitment outreach</p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="form-card">
+            <h2 class="form-title">Campaign Configuration</h2>
+            
+            <form action="/generate_email" method="post">
+                <div class="input-group">
                     <label for="inputData">Campaign Parameters:</label>
-                    <input type="text" id="inputData" name="inputData" placeholder="Enter campaign details..." required>
-                    <button type="submit">Execute</button>
-                </form>
+                    <input 
+                        type="text" 
+                        id="inputData" 
+                        name="inputData" 
+                        placeholder="Enter campaign details, target roles, or specific requirements..." 
+                        required
+                    >
+                </div>
+
+                <div class="submit-container">
+                    <button type="submit">Execute Campaign</button>
+                </div>
+            </form>
+
+            <!-- Status Indicator -->
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span class="status-text">System Ready</span>
+            </div>
+        </div>
+
+        <!-- Info Panel -->
+        <div class="info-panel">
+            <h3>⚡ Quick Tips</h3>
+            <ul>
+                <li>Be specific about target companies or roles for better personalization</li>
+                <li>Include any special requirements or preferences in your campaign details</li>
+                <li>System will auto-generate personalized content for each recruiter</li>
+                <li>Emails will be scheduled across optimal time zones automatically</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
