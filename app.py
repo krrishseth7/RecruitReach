@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+#from openai import OpenAI
 
 app = Flask(__name__)
 
@@ -8,14 +9,30 @@ def home():
 
 @app.route("/generate_email", methods=["POST"])
 def generate_email_route():
-    user_input = request.form.get("inputData")
+    name = request.form.get("inputData")
+    major= request.form.get("Major")
+    message=[{"role":"system","content":f"You are a very professional candidate, writing from my POV, my name is {name}"},{"role":"user","content":"Write an email as a cold email, you have access to the name, email, company,  position etc of the person, I am internship less so need an internship, make perzonalized email for each person"}]
 
     # temporary test (IMPORTANT)
-    return f"You entered: {user_input}"
+    return f"You entered: {major}"
 
 @app.route("/launch")
 def launched():
     return render_template("Launched.html")
+
+@app.route("/file_parse", methods=["POST"])
+def parse():
+    if "file" not in request.files:
+        return "No file part"
+
+    file = request.files["file"]
+
+    if file.filename == "":
+        return "No file selected"
+
+    # TEMP: just confirm it works
+    return f"File received: {file.filename}"
+
 
 if __name__ == "__main__":
     app.run(debug=True)
@@ -25,7 +42,7 @@ if __name__ == "__main__":
 # import requests
 # from dotenv import load_dotenv
 # from bs4 import BeautifulSoup
-# from openai import OpenAI
+# 
 # import msoffcrypto
 # import io
 # import openpyxl
